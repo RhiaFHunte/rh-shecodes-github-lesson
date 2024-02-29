@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <title>My Weather Application</title>
+</head>
+<body>
+  <div class="app">
+    <div class="container">
+      <div class="weather">
+        <header>
+          <form id="search-form">
+            <div class="weather-form">
+              <input type="search" id="search-input" placeholder="Enter a city..." required>
+              <input type="submit" value="Search">
+            </div>
+          </form>
+        </header>
+        <main>
+          <br>
+          <div class="current-weather">
+            <h5>LOCATION</h5>
+            <h1 id="current-city">LONDON</h1>
+            <div class="weather-info">
+              <div class="column-1">
+                <h1>🌤</h1>
+              </div>
+              <div class="column-2">
+                <p>
+                  <span id="current-date"></span> <br> Moderate rain</span>
+                </p>
+                <h2 id="current-temperature">
+                  <span id="current-temperature-value">25</span><span id="degree-icon">ºC</span>
+              </div>
+              <div class="column-3">
+                <p>
+                  Chance of Rain: <strong>3%</strong> <br>
+                  Humidity: <strong>87%</strong> <br>
+                  Wind: <strong>7.2km/h</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="forecast-container"></div>
+        </main>
+        <footer>
+          <div class="footer-section">
+            <p>
+              This project was coded by
+              <a href="https://www.linkedin.com/in/rhiahunte/" target="_blank">Rhia Hamilton</a>
+              and is <a href="https://github.com/RhiaFHunte/RhiaFHunte" target="_blank">on GitHub</a>
+              and <a href="#" target="_blank">hosted on Netlify.</a>
+            </p>
+          </div>
+        </footer>
+      </div>
+   </div>
+ </div>
+ 
+  <script>
+    // Function to display temperature and city
+    function displayWeatherData(response) {
+      const { temperature, city } = response.data;
+      document.querySelector("#current-temperature-value").textContent = Math.round(temperature.current);
+      document.querySelector("#current-city").textContent = city.toUpperCase(); // Convert city to uppercase
+}
+    
+    // Function to handle form submission and search for weather data
+    function handleFormSubmission(event) {
+      event.preventDefault();
+      const city = document.querySelector("#search-input").value;
+    
+      const apiKey = "b2a5adcct04b33178913oc335f405433";
+      const apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+    
+      axios.get(apiUrl).then(displayWeatherData);
+    }
+
+    // Function to format the current date with day, date, and time
+    function formatCurrentDate() {
+      const date = new Date();
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const day = days[date.getDay()];
+      const dateNum = date.getDate();
+      const suffix = dateNum === 1 || dateNum === 21 || dateNum === 31 ? "st" : dateNum === 2 || dateNum === 22 ? "nd" : dateNum === 3 || dateNum === 23 ? "rd" : "th";
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+    
+      document.querySelector("#current-date").textContent = `${day} ${dateNum}${suffix} ${hours}:${minutes}`;
+    }
+
+    // Call the formatCurrentDate function to set the initial date/time
+    formatCurrentDate();
+
+    // Add event listener to the form for submission
+    document.querySelector("#search-form").addEventListener("submit", handleFormSubmission);
+  </script>
+</body>
+</html>
